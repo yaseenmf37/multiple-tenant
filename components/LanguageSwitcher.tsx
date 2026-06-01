@@ -4,10 +4,10 @@ import { LOCALES, LOCALE_LABELS, isLocale, type Locale } from "@/lib/i18n/config
 import { useLocalized } from "@/lib/i18n/context";
 
 /**
- * Switches locale. In production each locale lives on its own subdomain
- * (en.suvio.com / hy.suvio.com), so we swap the first host label and keep the
- * path. On a bare host (localhost / apex) we fall back to a `?lang=` query,
- * which the middleware persists to a cookie.
+ * Switches locale by changing the host's locale subdomain and keeping the path.
+ * Each locale lives on its own subdomain (en.suvio.com / hy.suvio.com, and
+ * en.localhost / hy.localhost in dev). If the current host already starts with
+ * a locale label it is replaced; otherwise the locale label is prepended.
  */
 export default function LanguageSwitcher() {
   const { locale, t } = useLocalized();
@@ -17,13 +17,12 @@ export default function LanguageSwitcher() {
     const url = new URL(window.location.href);
     const labels = url.hostname.split(".");
 
-    if (isLocale(labels[0]) && labels.length > 1) {
+    if (isLocale(labels[0])) {
       labels[0] = next;
-      url.hostname = labels.join(".");
-      url.searchParams.delete("lang");
     } else {
-      url.searchParams.set("lang", next);
+      labels.unshift(next);
     }
+    url.hostname = labels.join(".");
     window.location.href = url.toString();
   }
 
