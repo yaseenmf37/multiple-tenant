@@ -1,160 +1,93 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Features",
-  description:
-    "Suvio features: online reservation engine, brandable website builder, multi-property management, analytics, room & pricing management, and payment & channel integrations.",
-};
+import { LocalizedLink } from "@/components/LocalizedLink";
+import { Button } from "@/components/ui/button";
+import { CtaSection } from "@/components/ui/cta-section";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { IconTile } from "@/components/ui/icon-tile";
+import { Placeholder } from "@/components/ui/placeholder";
+import { getI18n } from "@/lib/i18n/server";
+import { ROUTES } from "@/lib/routes";
 
-export default function FeaturesPage() {
+const ICONS = [
+  { variant: "default" as const, path: "M13 2L3 14h7l-1 8 10-12h-7l1-8z" },
+  { variant: "sand" as const, path: "M12 19l7-7a4 4 0 0 0-6-5l-1 1-1-1a4 4 0 0 0-6 5z" },
+  { variant: "default" as const, path: "M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" },
+  { variant: "ink" as const, path: "M3 3v18h18M7 15l4-4 3 3 5-6" },
+  { variant: "default" as const, path: "M3 7h18M3 12h18M3 17h18M7 3v18" },
+  { variant: "sand" as const, path: "M2 7h20v10H2zM2 11h20M6 15h4" },
+];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getI18n();
+  return { title: t.features.meta.title, description: t.features.meta.description };
+}
+
+export default async function FeaturesPage() {
+  const { t } = await getI18n();
+  const f = t.features;
+
   return (
       <main>
         {/* PAGE HERO */}
-        <section style={{ background: "var(--cream)", borderBottom: "1px solid var(--line)" }}>
-          <div className="container" style={{ paddingBlock: "clamp(48px,6vw,80px)", textAlign: "center" }}>
-            <span className="eyebrow center" style={{ justifyContent: "center" }}>Features</span>
-            <h1 className="display" style={{ fontSize: "clamp(32px,4.6vw,54px)", marginTop: "16px", maxWidth: "760px", marginInline: "auto" }}>Everything a modern hotel needs, in one platform</h1>
-            <p className="lead" style={{ marginTop: "18px", maxWidth: "600px", marginInline: "auto" }}>Replace your patchwork of tools with a single connected system — booking, branding, operations, and insight.</p>
-            <div className="flex flex-wrap items-center justify-center gap-3" style={{ marginTop: "28px" }}>
-              <Link className="btn btn-primary btn-lg" href="/contact">Start Free</Link>
-              <Link className="btn btn-outline btn-lg" href="/contact">Request a Demo</Link>
+        <section className="bg-cream border-b border-solid border-line">
+          <div className="container text-center" style={{ paddingBlock: "clamp(48px,6vw,80px)" }}>
+            <Eyebrow center>{f.hero.eyebrow}</Eyebrow>
+            <h1 className="display mt-[16px] max-w-[760px] mx-auto" style={{ fontSize: "clamp(32px,4.6vw,54px)" }}>{f.hero.title}</h1>
+            <p className="lead mt-[18px] max-w-[600px] mx-auto">{f.hero.lead}</p>
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-[28px]">
+              <Button asChild size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink></Button>
+              <Button asChild variant="outline" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink></Button>
             </div>
           </div>
         </section>
         {/* FEATURE GRID */}
         <section className="section">
           <div className="container">
-            <div className="grid gap-5 feat-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Online reservation engine</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Real-time availability, instant confirmation, and secure checkout. Calendar sync prevents double-bookings across every channel.</p>
-                <ul className="feat-list">
-                  <li>Live availability & instant confirmation</li>
-                  <li>Promo codes & length-of-stay rules</li>
-                  <li>Mobile-first guest checkout</li>
-                </ul>
-              </article>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile itile-sand">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 19l7-7a4 4 0 0 0-6-5l-1 1-1-1a4 4 0 0 0-6 5z" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Brandable website builder</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Launch a polished booking site on your own domain — your colors, your logo, your photography. No code required.</p>
-                <ul className="feat-list">
-                  <li>Custom domain & SSL included</li>
-                  <li>Luxury templates & theme controls</li>
-                  <li>SEO-ready, fast-loading pages</li>
-                </ul>
-              </article>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Multi-property management</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Operate every hotel, lodge, and resort from one account. Switch properties in a click; share teams and settings.</p>
-                <ul className="feat-list">
-                  <li>One login for all properties</li>
-                  <li>Per-property branding & settings</li>
-                  <li>Roles & granular permissions</li>
-                </ul>
-              </article>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile itile-ink">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 3v18h18M7 15l4-4 3 3 5-6" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Analytics & reports</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Understand occupancy, ADR, RevPAR, and channel mix at a glance. Export financial reports in a click.</p>
-                <ul className="feat-list">
-                  <li>Occupancy, ADR & RevPAR dashboards</li>
-                  <li>Channel & source attribution</li>
-                  <li>Scheduled financial exports</li>
-                </ul>
-              </article>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 7h18M3 12h18M3 17h18M7 3v18" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Room & pricing management</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Define room types, rate plans, and inventory. Let dynamic pricing adjust rates to demand and seasonality.</p>
-                <ul className="feat-list">
-                  <li>Room types & rate plans</li>
-                  <li>Dynamic, demand-based pricing</li>
-                  <li>Seasonal calendars & restrictions</li>
-                </ul>
-              </article>
-              <article className="card card-hover reveal" style={{ padding: "30px" }}>
-                <span className="itile itile-sand">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 7h20v10H2zM2 11h20M6 15h4" />
-                  </svg>
-                </span>
-                <h3 style={{ fontSize: "20px", marginTop: "18px" }}>Payments & integrations</h3>
-                <p className="text-muted" style={{ fontSize: "15px", marginTop: "10px", lineHeight: "1.75" }}>Connect leading payment gateways and sales channels so every booking and payout flows into one place.</p>
-                <ul className="feat-list">
-                  <li>Stripe, PayPal & local gateways</li>
-                  <li>OTA & channel-manager sync</li>
-                  <li>Automated payouts & reconciliation</li>
-                </ul>
-              </article>
+            <div className="grid gap-5 feat-grid grid-cols-3">
+              {f.grid.map((item, i) => (
+                <article key={item.title} className="card card-hover reveal p-[30px]">
+                  <IconTile variant={ICONS[i].variant} path={ICONS[i].path} />
+                  <h3 className="text-[20px] mt-[18px]">{item.title}</h3>
+                  <p className="text-muted text-[15px] mt-[10px] leading-[1.75]">{item.body}</p>
+                  <ul className="feat-list">
+                    {item.list.map((li) => <li key={li}>{li}</li>)}
+                  </ul>
+                </article>
+              ))}
             </div>
           </div>
         </section>
         {/* DEEP DIVE */}
         <section className="section bg-cream">
           <div className="container">
-            <div className="grid items-center gap-12 dash-grid" style={{ gridTemplateColumns: "1.05fr 1fr" }}>
+            <div className="grid items-center gap-12 dash-grid grid-cols-[1.05fr_1fr]">
               <div className="reveal">
-                <span className="eyebrow">Built for direct bookings</span>
-                <h2 className="display" style={{ fontSize: "clamp(28px,3.6vw,42px)", marginTop: "16px" }}>Keep more of every reservation</h2>
-                <p className="lead" style={{ marginTop: "16px", maxWidth: "480px" }}>Every booking through your Suvio site is commission-free. Convert lookers into guests with a fast, trustworthy checkout that works on any device.</p>
-                <div className="grid gap-4" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "28px" }}>
+                <Eyebrow>{f.deepDive.eyebrow}</Eyebrow>
+                <h2 className="display mt-[16px]" style={{ fontSize: "clamp(28px,3.6vw,42px)" }}>{f.deepDive.title}</h2>
+                <p className="lead mt-[16px] max-w-[480px]">{f.deepDive.lead}</p>
+                <div className="grid gap-4 grid-cols-[1fr_1fr] mt-[28px]">
                   <div>
-                    <div className="stat-num" style={{ fontSize: "36px", color: "var(--brand-700)" }}>0%</div>
-                    <div className="text-muted" style={{ fontSize: "14px", marginTop: "4px" }}>OTA commission on direct bookings</div>
+                    <div className="stat-num text-[36px] text-brand-700">{f.deepDive.stat1Num}</div>
+                    <div className="text-muted text-[14px] mt-[4px]">{f.deepDive.stat1Label}</div>
                   </div>
                   <div>
-                    <div className="stat-num" style={{ fontSize: "36px", color: "var(--brand-700)" }}>&lt;2s</div>
-                    <div className="text-muted" style={{ fontSize: "14px", marginTop: "4px" }}>Median page load on guest sites</div>
+                    <div className="stat-num text-[36px] text-brand-700">{f.deepDive.stat2Num}</div>
+                    <div className="text-muted text-[14px] mt-[4px]">{f.deepDive.stat2Label}</div>
                   </div>
                 </div>
               </div>
               <div className="reveal">
-                <div className="ph" style={{ height: "340px", borderRadius: "var(--radius-lg)" }}>
-                  <span>// guest checkout screen</span>
-                </div>
+                <Placeholder label={f.deepDive.photo} className="h-[340px] rounded-lg" />
               </div>
             </div>
           </div>
         </section>
         {/* CTA */}
-        <section className="section">
-          <div className="container">
-            <div className="reveal" style={{ position: "relative", overflow: "hidden", borderRadius: "var(--radius-lg)", background: "linear-gradient(120deg,var(--brand-800),var(--brand-600))", padding: "clamp(40px,6vw,68px)", textAlign: "center", boxShadow: "var(--shadow-lg)" }}>
-              <div style={{ position: "absolute", inset: "0", backgroundImage: "repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px)", pointerEvents: "none" }} />
-              <div style={{ position: "relative" }}>
-                <h2 className="display" style={{ fontSize: "clamp(26px,3.6vw,42px)", color: "#fff", maxWidth: "620px", marginInline: "auto" }}>See every feature in action</h2>
-                <div className="flex flex-wrap items-center justify-center gap-3" style={{ marginTop: "26px" }}>
-                  <Link className="btn btn-lg" href="/contact" style={{ background: "#fff", color: "var(--brand-700)", borderColor: "#fff" }}>Start Free</Link>
-                  <Link className="btn btn-on-dark btn-outline btn-lg" href="/contact">Request a Demo</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <CtaSection title={f.cta.title}>
+          <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink></Button>
+          <Button asChild variant="onDark" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink></Button>
+        </CtaSection>
       </main>
   );
 }

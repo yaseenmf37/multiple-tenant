@@ -1,32 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const PAGES = [
-  { href: "/features", label: "Features" },
-  { href: "/solutions", label: "Solutions" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-];
-
-function Logo() {
-  return (
-    <svg
-      className="mark"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect x="2" y="2" width="20" height="20" rx="6" fill="#0d9488" />
-      <rect x="10" y="10" width="20" height="20" rx="6" fill="#115e59" />
-      <rect x="14.5" y="14.5" width="11" height="11" rx="3.2" fill="#9fe5db" />
-    </svg>
-  );
-}
+import { LocalizedLink } from "@/components/LocalizedLink";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+import { useLocalized } from "@/lib/i18n/context";
+import { ROUTES } from "@/lib/routes";
 
 const MenuIcon = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -41,9 +23,18 @@ const CloseIcon = (
 );
 
 export default function Navbar() {
+  const { t } = useLocalized();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const pages = [
+    { href: ROUTES.FEATURES, label: t.nav.features },
+    { href: ROUTES.SOLUTIONS, label: t.nav.solutions },
+    { href: ROUTES.PRICING, label: t.nav.pricing },
+    { href: ROUTES.ABOUT, label: t.nav.about },
+    { href: ROUTES.BLOG, label: t.nav.blog },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -60,37 +51,38 @@ export default function Navbar() {
   return (
     <header className={`nav${scrolled ? " scrolled" : ""}`} id="siteNav">
       <div className="container nav-inner">
-        <Link className="brand" href="/" aria-label="Suvio home">
+        <LocalizedLink className="brand" href={ROUTES.HOME} aria-label={t.nav.homeAria}>
           <Logo />
-          <span style={{ display: "flex", flexDirection: "column", lineHeight: "1.05" }}>
-            <span>Suvio</span>
-            <span className="sub">hotel platform</span>
+          <span className="flex flex-col leading-[1.05]">
+            <span>{t.brand.name}</span>
+            <span className="sub">{t.brand.tagline}</span>
           </span>
-        </Link>
+        </LocalizedLink>
 
-        <nav className="nav-links" aria-label="Primary">
-          {PAGES.map((p) => (
-            <Link
+        <nav className="nav-links" aria-label={t.nav.primaryAria}>
+          {pages.map((p) => (
+            <LocalizedLink
               key={p.href}
               className={`nav-link${pathname === p.href ? " active" : ""}`}
               href={p.href}
             >
               {p.label}
-            </Link>
+            </LocalizedLink>
           ))}
         </nav>
 
         <div className="nav-actions">
-          <Link className="btn btn-ghost desktop-only" href="/contact">
-            Log in
-          </Link>
-          <Link className="btn btn-primary desktop-only" href="/contact">
-            Start Free
-          </Link>
+          <LanguageSwitcher />
+          <Button asChild variant="ghost" className="desktop-only">
+            <LocalizedLink href={ROUTES.CONTACT}>{t.nav.login}</LocalizedLink>
+          </Button>
+          <Button asChild className="desktop-only">
+            <LocalizedLink href={ROUTES.CONTACT}>{t.nav.startFree}</LocalizedLink>
+          </Button>
           <button
             className="nav-toggle"
             id="navToggle"
-            aria-label="Open menu"
+            aria-label={t.nav.openMenu}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -101,22 +93,22 @@ export default function Navbar() {
 
       <div className={`mobile-menu${open ? " open" : ""}`} id="mobileMenu">
         <div className="container">
-          {PAGES.map((p) => (
-            <Link
+          {pages.map((p) => (
+            <LocalizedLink
               key={p.href}
               href={p.href}
               style={pathname === p.href ? { color: "var(--brand-700)" } : undefined}
             >
               {p.label}
-            </Link>
+            </LocalizedLink>
           ))}
           <div className="m-actions">
-            <Link className="btn btn-outline" href="/contact">
-              Log in
-            </Link>
-            <Link className="btn btn-primary" href="/contact">
-              Start Free
-            </Link>
+            <Button asChild variant="outline">
+              <LocalizedLink href={ROUTES.CONTACT}>{t.nav.login}</LocalizedLink>
+            </Button>
+            <Button asChild>
+              <LocalizedLink href={ROUTES.CONTACT}>{t.nav.startFree}</LocalizedLink>
+            </Button>
           </div>
         </div>
       </div>

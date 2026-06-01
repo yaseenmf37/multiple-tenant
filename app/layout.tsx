@@ -3,23 +3,29 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { LocaleProvider } from "@/lib/i18n/context";
+import { getI18n } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: {
-    default: "Suvio — One platform, every hotel its own booking site",
-    template: "%s — Suvio",
-  },
-  description:
-    "Suvio is a multi-tenant hotel platform. Give every property its own branded booking website, manage them all from one dashboard, and grow commission-free direct bookings.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getI18n();
+  return {
+    title: {
+      default: t.home.meta.title,
+      template: `%s — ${t.brand.name}`,
+    },
+    description: t.home.meta.description,
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { locale, t } = await getI18n();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -29,10 +35,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
-        {children}
-        <Footer />
-        <ScrollReveal />
+        <LocaleProvider locale={locale} dictionary={t}>
+          <Navbar />
+          {children}
+          <Footer />
+          <ScrollReveal />
+        </LocaleProvider>
       </body>
     </html>
   );

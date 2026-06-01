@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+
+import { LocalizedLink } from "@/components/LocalizedLink";
 import PricingPlans from "@/components/PricingPlans";
+import { Button } from "@/components/ui/button";
+import { CtaSection } from "@/components/ui/cta-section";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { getI18n } from "@/lib/i18n/server";
+import { ROUTES } from "@/lib/routes";
 
-export const metadata: Metadata = {
-  title: "Pricing",
-  description:
-    "Simple, transparent pricing for Suvio. Basic, Pro, and Enterprise plans with monthly or annual billing, a full feature comparison, and FAQ.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getI18n();
+  return { title: t.pricing.meta.title, description: t.pricing.meta.description };
+}
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const { t } = await getI18n();
+  const c = t.pricing.compare;
+  const r = c.rows;
+  const v = c.values;
+
   return (
     <main>
       <PricingPlans />
@@ -16,92 +26,92 @@ export default function PricingPage() {
       {/* COMPARISON TABLE */}
       <section className="section bg-cream" style={{ paddingTop: "clamp(48px,6vw,80px)" }}>
         <div className="container">
-          <div className="reveal" style={{ textAlign: "center", maxWidth: "560px", margin: "0 auto 44px" }}>
-            <span className="eyebrow center" style={{ justifyContent: "center" }}>Compare plans</span>
-            <h2 className="display" style={{ fontSize: "clamp(26px,3.4vw,40px)", marginTop: "14px" }}>Every detail, side by side</h2>
+          <div className="reveal text-center max-w-[560px] mx-auto mb-[44px]">
+            <Eyebrow center>{c.eyebrow}</Eyebrow>
+            <h2 className="display mt-[14px]" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{c.title}</h2>
           </div>
           <div className="reveal table-wrap">
             <table className="cmp">
               <thead>
                 <tr>
-                  <th style={{ textAlign: "left" }}>Features</th>
-                  <th>Basic</th>
-                  <th className="hl">Pro</th>
-                  <th>Enterprise</th>
+                  <th className="text-left">{c.colFeatures}</th>
+                  <th>{c.colBasic}</th>
+                  <th className="hl">{c.colPro}</th>
+                  <th>{c.colEnterprise}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="grp">
-                  <td colSpan={4}>Properties & rooms</td>
+                  <td colSpan={4}>{c.groupProps}</td>
                 </tr>
                 <tr>
-                  <td>Properties</td>
+                  <td>{r.properties}</td>
                   <td>1</td>
                   <td className="hl">5</td>
-                  <td>Unlimited</td>
+                  <td>{v.unlimited}</td>
                 </tr>
                 <tr>
-                  <td>Rooms per property</td>
+                  <td>{r.roomsPerProperty}</td>
                   <td>15</td>
-                  <td className="hl">Unlimited</td>
-                  <td>Unlimited</td>
+                  <td className="hl">{v.unlimited}</td>
+                  <td>{v.unlimited}</td>
                 </tr>
                 <tr>
-                  <td>Team members</td>
+                  <td>{r.teamMembers}</td>
                   <td>3</td>
                   <td className="hl">15</td>
-                  <td>Unlimited</td>
+                  <td>{v.unlimited}</td>
                 </tr>
                 <tr className="grp">
-                  <td colSpan={4}>Booking & website</td>
+                  <td colSpan={4}>{c.groupBooking}</td>
                 </tr>
                 <tr>
-                  <td>Branded booking site</td>
+                  <td>{r.brandedSite}</td>
                   <td data-c="" />
                   <td className="hl" data-c="" />
                   <td data-c="" />
                 </tr>
                 <tr>
-                  <td>Custom domain & SSL</td>
+                  <td>{r.customDomain}</td>
                   <td data-c="" />
                   <td className="hl" data-c="" />
                   <td data-c="" />
                 </tr>
                 <tr>
-                  <td>Dynamic pricing</td>
+                  <td>{r.dynamicPricing}</td>
                   <td data-x="" />
                   <td className="hl" data-c="" />
                   <td data-c="" />
                 </tr>
                 <tr>
-                  <td>Channel manager sync</td>
+                  <td>{r.channelSync}</td>
                   <td data-x="" />
                   <td className="hl" data-c="" />
                   <td data-c="" />
                 </tr>
                 <tr className="grp">
-                  <td colSpan={4}>Insight & support</td>
+                  <td colSpan={4}>{c.groupInsight}</td>
                 </tr>
                 <tr>
-                  <td>Analytics & reports</td>
-                  <td>Basic</td>
-                  <td className="hl">Advanced</td>
-                  <td>Advanced + custom</td>
+                  <td>{r.analytics}</td>
+                  <td>{v.basicAnalytics}</td>
+                  <td className="hl">{v.advanced}</td>
+                  <td>{v.advancedCustom}</td>
                 </tr>
                 <tr>
-                  <td>API integrations</td>
+                  <td>{r.api}</td>
                   <td data-x="" />
                   <td className="hl" data-x="" />
                   <td data-c="" />
                 </tr>
                 <tr>
-                  <td>Support</td>
-                  <td>Email</td>
-                  <td className="hl">Priority</td>
-                  <td>Dedicated CSM</td>
+                  <td>{r.support}</td>
+                  <td>{v.email}</td>
+                  <td className="hl">{v.priority}</td>
+                  <td>{v.dedicatedCsm}</td>
                 </tr>
                 <tr>
-                  <td>Uptime SLA</td>
+                  <td>{r.sla}</td>
                   <td data-x="" />
                   <td className="hl" data-x="" />
                   <td>99.9%</td>
@@ -114,75 +124,37 @@ export default function PricingPage() {
 
       {/* FAQ */}
       <section className="section">
-        <div className="container" style={{ maxWidth: "820px" }}>
-          <div className="reveal" style={{ textAlign: "center", marginBottom: "40px" }}>
-            <span className="eyebrow center" style={{ justifyContent: "center" }}>FAQ</span>
-            <h2 className="display" style={{ fontSize: "clamp(26px,3.4vw,40px)", marginTop: "14px" }}>Questions, answered</h2>
+        <div className="container max-w-[820px]">
+          <div className="reveal text-center mb-[40px]">
+            <Eyebrow center>{t.pricing.faq.eyebrow}</Eyebrow>
+            <h2 className="display mt-[14px]" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t.pricing.faq.title}</h2>
           </div>
           <div className="faq reveal">
-            <details className="faq-item" open>
-              <summary>Is there really a free trial?<span className="faq-ico" /></summary>
-              <p>Yes — every plan starts with a 14-day free trial. No credit card required, and you can cancel any time before it ends.</p>
-            </details>
-            <details className="faq-item">
-              <summary>Do you charge commission on bookings?<span className="faq-ico" /></summary>
-              <p>No. Bookings made through your Suvio site are commission-free. You only pay your plan&apos;s subscription and your payment processor&apos;s standard transaction fees.</p>
-            </details>
-            <details className="faq-item">
-              <summary>Can I manage more than one property?<span className="faq-ico" /></summary>
-              <p>Absolutely. Pro supports up to five properties from one account, and Enterprise is unlimited — each with its own branding and reporting.</p>
-            </details>
-            <details className="faq-item">
-              <summary>What happens if I switch from monthly to annual?<span className="faq-ico" /></summary>
-              <p>You can switch billing at any time. Annual billing saves 20%, and we&apos;ll prorate the difference automatically.</p>
-            </details>
-            <details className="faq-item">
-              <summary>Which payment gateways do you support?<span className="faq-ico" /></summary>
-              <p>Stripe, PayPal, and a range of regional gateways. Enterprise customers can add custom gateways through our API.</p>
-            </details>
+            {t.pricing.faq.items.map((item, i) => (
+              <details className="faq-item" key={item.q} open={i === 0}>
+                <summary>{item.q}<span className="faq-ico" /></summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="section" style={{ paddingTop: "0" }}>
-        <div className="container">
-          <div
-            className="reveal"
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              borderRadius: "var(--radius-lg)",
-              background: "linear-gradient(120deg,var(--brand-800),var(--brand-600))",
-              padding: "clamp(40px,6vw,64px)",
-              textAlign: "center",
-              boxShadow: "var(--shadow-lg)",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: "0",
-                backgroundImage: "repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px)",
-                pointerEvents: "none",
-              }}
-            />
-            <div style={{ position: "relative" }}>
-              <h2 className="display" style={{ fontSize: "clamp(26px,3.6vw,40px)", color: "#fff", maxWidth: "560px", marginInline: "auto" }}>
-                Start free — be live this week
-              </h2>
-              <div className="flex flex-wrap items-center justify-center gap-3" style={{ marginTop: "24px" }}>
-                <Link className="btn btn-lg" href="/contact" style={{ background: "#fff", color: "var(--brand-700)", borderColor: "#fff" }}>
-                  Start Free
-                </Link>
-                <Link className="btn btn-on-dark btn-outline btn-lg" href="/contact">
-                  Request a Demo
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CtaSection
+        title={t.pricing.cta.title}
+        titleFontSize="clamp(26px,3.6vw,40px)"
+        titleMaxWidth="560px"
+        padding="clamp(40px,6vw,64px)"
+        sectionStyle={{ paddingTop: "0" }}
+      >
+        <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white">
+          <LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink>
+        </Button>
+        <Button asChild variant="onDark" size="lg">
+          <LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink>
+        </Button>
+      </CtaSection>
     </main>
   );
 }

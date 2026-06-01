@@ -1,19 +1,51 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 — import only theme + utilities (preflight intentionally
+   omitted so the custom design system below keeps full control of resets,
+   matching the previous `corePlugins: { preflight: false }`). */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Expose the design tokens (defined on :root below) to Tailwind so utilities
+   like bg-brand-600 / text-muted / rounded-lg / shadow-lg are generated.
+   `inline` means the utilities reference the var() directly, so :root stays
+   the single source of truth and every existing var(--token) keeps working. */
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-sand: var(--sand);
+  --color-sand-700: var(--sand-700);
+  --color-sand-100: var(--sand-100);
+  --color-ink: var(--ink);
+  --color-ink-700: var(--ink-700);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-paper: var(--paper);
+  --color-cream: var(--cream);
+  --color-cream-2: var(--cream-2);
+  --color-dark: var(--dark);
+  --color-dark-2: var(--dark-2);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-lg: var(--shadow-lg);
+  --radius: var(--radius);
+  --radius-lg: var(--radius-lg);
+}
 
 /* ====================================================================
-   Suvio design system (ported from the original assets/styles.css)
-   Fonts (DM Sans / DM Mono) are loaded via <link> in app/layout.tsx.
+   Suvio design system — teal primary + warm sand + slate neutrals.
+   Fonts (DM Sans / DM Mono) load via <link> in app/layout.tsx.
+   Design tokens below feed @theme above, so they're reusable as both
+   var(--token) and Tailwind utilities (bg-brand-600, text-muted, …).
    ==================================================================== */
-
-/* ============================================================
-   Suvio — Multi-tenant Hotel SaaS — Shared Design System
-   Bright & airy · teal primary + warm sand + slate neutrals
-   Type: DM Sans (UI) · DM Mono (labels)
-   ============================================================ */
-
-
 :root{
   /* Brand — teal */
   --brand-50:#f0fdfa;
@@ -54,6 +86,11 @@
   --maxw:1200px;
 }
 
+/* The whole design system lives in @layer components so that Tailwind
+   utilities (which sit in the later @layer utilities) can override these
+   base/component rules. Without a layer, these unlayered rules would beat
+   every utility regardless of specificity. */
+@layer components {
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -186,6 +223,12 @@ p{margin:0}
   content:"";position:absolute;left:13px;right:13px;bottom:3px;height:2px;border-radius:2px;background:var(--brand-500);
 }
 .nav-actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+
+/* ---------- language switcher ---------- */
+.lang-switch{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line-2);background:#fff;border-radius:999px;padding:3px}
+.lang-opt{border:0;background:transparent;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:999px;transition:color .2s ease, background .2s ease}
+.lang-opt:hover{color:var(--brand-700)}
+.lang-opt.active{background:var(--brand-600);color:#fff}
 .nav-toggle{display:none;width:44px;height:44px;border:1px solid var(--line-2);background:#fff;border-radius:12px;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
 .nav-toggle svg{width:22px;height:22px}
 
@@ -354,8 +397,9 @@ a.chip{cursor:pointer;text-decoration:none}
 a.chip:hover{filter:brightness(.97)}
 @media (max-width:980px){
   .sol-grid{grid-template-columns:1fr !important}
-  .sol-rev .reveal[style*="order:2"]{order:0 !important}
-  .sol-rev .reveal[style*="order:1"]{order:0 !important}
+  .sol-rev .reveal.order-2{order:0 !important}
+  .sol-rev .reveal.order-1{order:0 !important}
   .foot-grid{grid-template-columns:1fr 1fr !important}
 }
 @media (max-width:560px){.foot-grid{grid-template-columns:1fr !important}}
+} /* end @layer components */

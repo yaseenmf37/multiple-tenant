@@ -1,147 +1,84 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description:
-    "The Suvio blog: practical guides on increasing direct bookings, hotel management, and hospitality marketing.",
-};
+import { LocalizedLink } from "@/components/LocalizedLink";
+import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { Placeholder } from "@/components/ui/placeholder";
+import { getI18n } from "@/lib/i18n/server";
+import { ROUTES } from "@/lib/routes";
 
-export default function BlogPage() {
+const FILTER_VARIANTS = ["default", "ink", "ink", "ink"] as const;
+const POST_TAG_VARIANTS = ["sand", "default", "sand", "default", "default", "sand"] as const;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getI18n();
+  return { title: t.blog.meta.title, description: t.blog.meta.description };
+}
+
+export default async function BlogPage() {
+  const { t } = await getI18n();
+  const b = t.blog;
+
   return (
       <main>
         {/* HERO */}
-        <section style={{ background: "var(--cream)", borderBottom: "1px solid var(--line)" }}>
-          <div className="container" style={{ paddingBlock: "clamp(44px,5vw,72px)", textAlign: "center" }}>
-            <span className="eyebrow center" style={{ justifyContent: "center" }}>The Suvio blog</span>
-            <h1 className="display" style={{ fontSize: "clamp(32px,4.4vw,52px)", marginTop: "16px", maxWidth: "700px", marginInline: "auto" }}>Ideas for filling more rooms, directly</h1>
-            <p className="lead" style={{ marginTop: "16px", maxWidth: "560px", marginInline: "auto" }}>Practical guides on direct bookings, hotel operations, and hospitality marketing.</p>
-            <div className="flex flex-wrap items-center justify-center gap-2" style={{ marginTop: "24px" }}>
-              <span className="chip">All</span>
-              <span className="chip chip-ink">Direct bookings</span>
-              <span className="chip chip-ink">Hotel management</span>
-              <span className="chip chip-ink">Marketing</span>
+        <section className="bg-cream border-b border-solid border-line">
+          <div className="container text-center" style={{ paddingBlock: "clamp(44px,5vw,72px)" }}>
+            <Eyebrow center>{b.hero.eyebrow}</Eyebrow>
+            <h1 className="display mt-[16px] max-w-[700px] mx-auto" style={{ fontSize: "clamp(32px,4.4vw,52px)" }}>{b.hero.title}</h1>
+            <p className="lead mt-[16px] max-w-[560px] mx-auto">{b.hero.lead}</p>
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-[24px]">
+              {b.hero.filters.map((filter, i) => (
+                <Chip key={filter} variant={FILTER_VARIANTS[i]}>{filter}</Chip>
+              ))}
             </div>
           </div>
         </section>
         {/* FEATURED */}
         <section className="section" style={{ paddingBottom: "clamp(28px,3vw,40px)" }}>
           <div className="container">
-            <Link className="card card-hover reveal feat-post" href="/blog/article" style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", overflow: "hidden", borderRadius: "var(--radius-lg)" }}>
-              <div className="ph" style={{ minHeight: "300px" }}>
-                <span>// featured article cover</span>
-              </div>
-              <div style={{ padding: "clamp(26px,3vw,44px)", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <div className="flex items-center gap-3" style={{ marginBottom: "14px" }}>
-                  <span className="chip">Direct bookings</span>
-                  <span className="text-muted" style={{ fontSize: "13px" }}>8 min read</span>
+            <LocalizedLink className="card card-hover reveal feat-post grid grid-cols-[1.1fr_1fr] overflow-hidden rounded-lg" href={ROUTES.BLOG_ARTICLE}>
+              <Placeholder label={b.featuredCover} className="min-h-[300px]" />
+              <div className="flex flex-col justify-center" style={{ padding: "clamp(26px,3vw,44px)" }}>
+                <div className="flex items-center gap-3 mb-[14px]">
+                  <Chip>{b.featured.tag}</Chip>
+                  <span className="text-muted text-[13px]">{b.featured.readTime}</span>
                 </div>
-                <h2 className="display" style={{ fontSize: "clamp(24px,2.8vw,34px)", lineHeight: "1.15" }}>7 ways to grow direct bookings and cut OTA commissions</h2>
-                <p className="text-muted" style={{ fontSize: "15.5px", marginTop: "14px", lineHeight: "1.7", maxWidth: "460px" }}>From a faster checkout to a smart loyalty offer — the highest-leverage changes that move guests from marketplaces to your own site.</p>
-                <div className="flex items-center gap-3" style={{ marginTop: "22px" }}>
-                  <span className="ph" style={{ width: "38px", height: "38px", borderRadius: "50%" }}>
-                    <span style={{ fontSize: "8px" }}>photo</span>
-                  </span>
+                <h2 className="display" style={{ fontSize: "clamp(24px,2.8vw,34px)", lineHeight: "1.15" }}>{b.featured.title}</h2>
+                <p className="text-muted text-[15.5px] mt-[14px] leading-[1.7] max-w-[460px]">{b.featured.excerpt}</p>
+                <div className="flex items-center gap-3 mt-[22px]">
+                  <Placeholder label={t.common.photo} className="w-[38px] h-[38px] rounded-full" labelStyle={{ fontSize: "8px" }} />
                   <div>
-                    <div style={{ fontWeight: "700", fontSize: "13.5px" }}>Priya Nair</div>
-                    <div className="text-muted" style={{ fontSize: "12.5px" }}>May 28, 2026</div>
+                    <div className="font-bold text-[13.5px]">{b.featured.author}</div>
+                    <div className="text-muted text-[12.5px]">{b.featured.date}</div>
                   </div>
                 </div>
               </div>
-            </Link>
+            </LocalizedLink>
           </div>
         </section>
         {/* GRID */}
-        <section className="section" style={{ paddingTop: "0" }}>
+        <section className="section pt-0">
           <div className="container">
-            <div className="grid gap-5 blog-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip chip-sand">Marketing</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>5 min</span>
+            <div className="grid gap-5 blog-grid grid-cols-3">
+              {b.posts.map((post, i) => (
+                <LocalizedLink key={post.title} className="card card-hover reveal post" href={ROUTES.BLOG_ARTICLE}>
+                  <Placeholder label={b.cover} className="h-[200px]" />
+                  <div className="p-[22px]">
+                    <div className="flex items-center gap-3 mb-[12px]">
+                      <Chip variant={POST_TAG_VARIANTS[i]}>{post.tag}</Chip>
+                      <span className="text-muted text-[12.5px]">{post.readTime}</span>
+                    </div>
+                    <h3 className="text-[18.5px] leading-[1.3]">{post.title}</h3>
+                    <p className="text-muted text-[14px] mt-[10px] leading-[1.65]">{post.excerpt}</p>
+                    <div className="post-meta">{post.meta}</div>
                   </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>The hotel website photos that actually convert</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>What to shoot, what to skip, and how to sequence images so visitors hit "book" sooner.</p>
-                  <div className="post-meta">Apr 30, 2026 · Tom Okafor</div>
-                </div>
-              </Link>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip">Hotel management</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>6 min</span>
-                  </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>A simple weekly revenue routine for small hotels</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>Thirty minutes every Monday to read the right numbers and adjust rates with confidence.</p>
-                  <div className="post-meta">Apr 18, 2026 · Lina Haddad</div>
-                </div>
-              </Link>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip chip-sand">Marketing</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>7 min</span>
-                  </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>Email that brings past guests back</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>Three campaigns every property should run — and the timing that makes them work.</p>
-                  <div className="post-meta">Apr 06, 2026 · Priya Nair</div>
-                </div>
-              </Link>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip">Direct bookings</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>4 min</span>
-                  </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>Why your booking flow is losing guests at checkout</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>The friction points that quietly cost you reservations — and how to remove them today.</p>
-                  <div className="post-meta">Mar 22, 2026 · Marcus Reed</div>
-                </div>
-              </Link>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip">Hotel management</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>9 min</span>
-                  </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>Running multiple properties without losing your weekends</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>Systems and habits that let a small team manage a growing portfolio calmly.</p>
-                  <div className="post-meta">Mar 09, 2026 · Lina Haddad</div>
-                </div>
-              </Link>
-              <Link className="card card-hover reveal post" href="/blog/article">
-                <div className="ph" style={{ height: "200px" }}>
-                  <span>// article cover</span>
-                </div>
-                <div style={{ padding: "22px" }}>
-                  <div className="flex items-center gap-3" style={{ marginBottom: "12px" }}>
-                    <span className="chip chip-sand">Marketing</span>
-                    <span className="text-muted" style={{ fontSize: "12.5px" }}>6 min</span>
-                  </div>
-                  <h3 style={{ fontSize: "18.5px", lineHeight: "1.3" }}>Local SEO for hotels: a starter playbook</h3>
-                  <p className="text-muted" style={{ fontSize: "14px", marginTop: "10px", lineHeight: "1.65" }}>Get found by guests searching your area — without an agency or a big budget.</p>
-                  <div className="post-meta">Feb 24, 2026 · Tom Okafor</div>
-                </div>
-              </Link>
+                </LocalizedLink>
+              ))}
             </div>
-            <div className="reveal" style={{ textAlign: "center", marginTop: "44px" }}>
-              <button className="btn btn-outline btn-lg" type="button">Load more articles</button>
+            <div className="reveal text-center mt-[44px]">
+              <Button variant="outline" size="lg" type="button">{b.loadMore}</Button>
             </div>
           </div>
         </section>
