@@ -8,13 +8,21 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { getI18n } from "@/lib/i18n/server";
 import { ROUTES } from "@/lib/routes";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.pricing.meta.title, description: t.pricing.meta.description };
 }
 
-export default async function PricingPage() {
-  const { t } = await getI18n();
+export default async function PricingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const c = t.pricing.compare;
   const r = c.rows;
   const v = c.values;

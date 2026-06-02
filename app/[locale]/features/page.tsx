@@ -18,13 +18,21 @@ const ICONS = [
   { variant: "sand" as const, path: "M2 7h20v10H2zM2 11h20M6 15h4" },
 ];
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.features.meta.title, description: t.features.meta.description };
 }
 
-export default async function FeaturesPage() {
-  const { t } = await getI18n();
+export default async function FeaturesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const f = t.features;
 
   return (

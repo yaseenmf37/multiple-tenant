@@ -10,13 +10,21 @@ import { EXTERNAL } from "@/lib/routes";
 const CONTACT_ICON = { width: "44px", height: "44px", borderRadius: "12px" };
 const CONTACT_SVG = { width: "20px", height: "20px" };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.contact.meta.title, description: t.contact.meta.description };
 }
 
-export default async function ContactPage() {
-  const { t } = await getI18n();
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const c = t.contact;
 
   return (

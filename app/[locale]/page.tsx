@@ -23,8 +23,12 @@ const ArrowIcon = (
   </svg>
 );
 
-export default async function HomePage() {
-  const { t } = await getI18n();
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const h = t.home;
 
   return (

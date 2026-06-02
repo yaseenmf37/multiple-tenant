@@ -12,13 +12,21 @@ const SHARE_TAG_VARIANTS = ["default", "ink"] as const;
 const RELATED_TAG_VARIANTS = ["sand", "default", "default"] as const;
 const SHARE_ICON_STYLE = { borderColor: "var(--line-2)", color: "var(--ink-700)" };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.blogArticle.meta.title, description: t.blogArticle.meta.description };
 }
 
-export default async function BlogArticlePage() {
-  const { t } = await getI18n();
+export default async function BlogArticlePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const a = t.blogArticle;
   // The body interleaves a blockquote after section 2 and a checkout list
   // after section 3, matching the original article layout.

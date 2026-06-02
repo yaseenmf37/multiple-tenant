@@ -9,13 +9,21 @@ import { Placeholder } from "@/components/ui/placeholder";
 import { getI18n } from "@/lib/i18n/server";
 import { ANCHORS, ROUTES } from "@/lib/routes";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.solutions.meta.title, description: t.solutions.meta.description };
 }
 
-export default async function SolutionsPage() {
-  const { t } = await getI18n();
+export default async function SolutionsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const s = t.solutions;
 
   const chipVariants = ["default", "ink", "ink", "sand"] as const;

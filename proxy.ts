@@ -3,8 +3,10 @@ import { localeFromHost } from "./lib/i18n/config";
 
 /**
  * Resolves the locale purely from the request subdomain
- * (en.suvio.com → "en", hy.suvio.com → "hy") and exposes it to the app via the
- * `x-locale` request header, read by getLocale() in server components.
+ * (en.suvio.com → "en", hy.suvio.com → "hy") and carries it into the app by
+ * rewriting the request to the `/{locale}/...` route segment, where the
+ * `app/[locale]` layout and pages read it from their `params`. The public URL
+ * stays clean (no locale prefix); the segment exists only internally.
  * A host without a known locale subdomain falls back to the default locale.
  *
  * Next 16 renamed the `middleware` file convention to `proxy`.
@@ -12,10 +14,10 @@ import { localeFromHost } from "./lib/i18n/config";
 export function proxy(req: NextRequest) {
   const locale = localeFromHost(req.headers.get("host"));
 
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-locale", locale);
+  const url = req.nextUrl.clone();
+  url.pathname = `/${locale}${url.pathname}`;
 
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  return NextResponse.rewrite(url);
 }
 
 export const config = {

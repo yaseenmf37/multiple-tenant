@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { LOCALES } from "@/lib/i18n/config";
 import { LocaleProvider } from "@/lib/i18n/context";
 import { getI18n } from "@/lib/i18n/server";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return {
     title: {
       default: t.home.meta.title,
@@ -19,10 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const { locale, t } = await getI18n();
+  const { locale, t } = getI18n((await params).locale);
 
   return (
     <html lang={locale}>

@@ -11,13 +11,21 @@ import { ROUTES } from "@/lib/routes";
 const FILTER_VARIANTS = ["default", "ink", "ink", "ink"] as const;
 const POST_TAG_VARIANTS = ["sand", "default", "sand", "default", "default", "sand"] as const;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.blog.meta.title, description: t.blog.meta.description };
 }
 
-export default async function BlogPage() {
-  const { t } = await getI18n();
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const b = t.blog;
 
   return (

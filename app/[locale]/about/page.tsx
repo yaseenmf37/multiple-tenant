@@ -15,13 +15,21 @@ const VALUE_ICONS = [
   { variant: "ink" as const, path: "M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3" },
 ];
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { t } = getI18n((await params).locale);
   return { title: t.about.meta.title, description: t.about.meta.description };
 }
 
-export default async function AboutPage() {
-  const { t } = await getI18n();
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { t } = getI18n((await params).locale);
   const a = t.about;
 
   return (

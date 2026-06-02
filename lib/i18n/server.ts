@@ -1,20 +1,22 @@
 import "server-only";
-import { headers } from "next/headers";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "./config";
 import { getDictionary } from "./dictionaries";
 
 /**
- * Resolves the active locale on the server. The middleware sets the `x-locale`
- * request header from the subdomain (or the dev cookie/query fallback); we read
- * it back here. Falls back to the default locale when the header is absent.
+ * Normalizes the `[locale]` route segment into a known locale, falling back to
+ * the default when it is missing or unrecognized. The proxy rewrites every
+ * request to `/{locale}/...` from the subdomain, so this segment is the single
+ * source of truth for the active locale on the server.
  */
-export async function getLocale(): Promise<Locale> {
-  const value = (await headers()).get("x-locale");
-  return isLocale(value) ? value : DEFAULT_LOCALE;
+export function resolveLocale(segment: string | undefined): Locale {
+  return isLocale(segment) ? segment : DEFAULT_LOCALE;
 }
 
-/** Convenience: the active locale together with its dictionary. */
-export async function getI18n() {
-  const locale = await getLocale();
+/**
+ * The active locale together with its dictionary, derived from the `[locale]`
+ * route segment. Pass `params.locale` from a server page or layout.
+ */
+export function getI18n(segment: string | undefined) {
+  const locale = resolveLocale(segment);
   return { locale, t: getDictionary(locale) };
 }
