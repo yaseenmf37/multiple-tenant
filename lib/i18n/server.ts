@@ -1,6 +1,35 @@
 import "server-only";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "./config";
-import { getDictionary } from "./dictionaries";
+import {
+  createInstance,
+  type i18n,
+  type KeyPrefix,
+  type Namespace,
+} from "i18next";
+import resourcesToBackend from "i18next-resources-to-backend";
+import { cache } from "react";
+import { DEFAULT_LOCALE, getOptions, isLocale, type Locale } from "./config";
+
+const initI18next = async (
+  lng: string,
+  ns?: string | string[]
+): Promise<i18n> => {
+  const i18nInstance = createInstance();
+  await i18nInstance
+    .use(
+      resourcesToBackend(
+        (language: string, namespace: string) =>
+          import(`../../locales/${language}/${namespace}.json`)
+      )
+    )
+    .init(getOptions(lng, ns));
+  return i18nInstance;
+};
+
+export const getCachedI18n = cache(
+  async (lng: string, ns?: string | string[]) => {
+    return initI18next(lng, ns);
+  }
+);
 
 /**
  * Normalizes the `[locale]` route segment into a known locale, falling back to
@@ -13,10 +42,33 @@ export function resolveLocale(segment: string | undefined): Locale {
 }
 
 /**
- * The active locale together with its dictionary, derived from the `[locale]`
- * route segment. Pass `params.locale` from a server page or layout.
+ * Server-side translator. Returns the bound `t` function, the i18next instance,
+ * and the raw `resources` (passed to the client provider for hydration) — the
+ * same shape teppich's `getTranslation` returns.
  */
-export function getI18n(segment: string | undefined) {
-  const locale = resolveLocale(segment);
-  return { locale, t: getDictionary(locale) };
+export async function getTranslation<
+  N extends Namespace = "common",
+  KPrefix extends KeyPrefix<N> = undefined,
+>(lng: string, ns?: N, keyPrefix?: KPrefix) {
+  const nsNorm = (ns ?? "common") as N;
+  const nsArray =
+    typeof nsNorm === "string"
+      ? [nsNorm]
+      : Array.isArray(nsNorm)
+        ? [...nsNorm]
+        : ["common"];
+
+  const i18nextInstance = await getCachedI18n(resolveLocale(lng), nsArray);
+
+  const t = i18nextInstance.getFixedT<N, KPrefix>(
+    resolveLocale(lng),
+    nsNorm,
+    keyPrefix
+  );
+
+  return {
+    t,
+    i18n: i18nextInstance,
+    resources: i18nextInstance.services.resourceStore.data,
+  };
 }

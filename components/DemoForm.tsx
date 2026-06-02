@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { useLocalized } from "@/lib/i18n/context";
 import { EXTERNAL } from "@/lib/routes";
 
 export default function DemoForm() {
-  const { t } = useLocalized();
-  const f = t.contact.form;
+  const { t } = useTranslation();
+  const types = t("contact.form.types", { returnObjects: true }) as string[];
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -26,36 +26,36 @@ export default function DemoForm() {
       >
         <div className="grid gap-4 grid-cols-2">
           <div className="field col-span-2">
-            <label htmlFor="name">{f.name}</label>
-            <input className="input" id="name" name="name" type="text" placeholder={f.namePlaceholder} required />
+            <label htmlFor="name">{t("contact.form.name")}</label>
+            <input className="input" id="name" name="name" type="text" placeholder={t("contact.form.namePlaceholder")} required />
           </div>
           <div className="field col-span-2">
-            <label htmlFor="hotel">{f.hotel}</label>
-            <input className="input" id="hotel" name="hotel" type="text" placeholder={f.hotelPlaceholder} required />
+            <label htmlFor="hotel">{t("contact.form.hotel")}</label>
+            <input className="input" id="hotel" name="hotel" type="text" placeholder={t("contact.form.hotelPlaceholder")} required />
           </div>
           <div className="field">
-            <label htmlFor="email">{f.email}</label>
-            <input className="input" id="email" name="email" type="email" placeholder={f.emailPlaceholder} required />
+            <label htmlFor="email">{t("contact.form.email")}</label>
+            <input className="input" id="email" name="email" type="email" placeholder={t("contact.form.emailPlaceholder")} required />
           </div>
           <div className="field">
-            <label htmlFor="phone">{f.phone}</label>
-            <input className="input" id="phone" name="phone" type="tel" placeholder={f.phonePlaceholder} />
+            <label htmlFor="phone">{t("contact.form.phone")}</label>
+            <input className="input" id="phone" name="phone" type="tel" placeholder={t("contact.form.phonePlaceholder")} />
           </div>
           <div className="field col-span-2">
-            <label htmlFor="type">{f.propertyType}</label>
-            <select className="select" id="type" name="type" defaultValue={f.types[0]}>
-              {f.types.map((type) => (
+            <label htmlFor="type">{t("contact.form.propertyType")}</label>
+            <select className="select" id="type" name="type" defaultValue={types[0]}>
+              {types.map((type) => (
                 <option key={type}>{type}</option>
               ))}
             </select>
           </div>
           <div className="field col-span-2">
-            <label htmlFor="message">{f.message}</label>
+            <label htmlFor="message">{t("contact.form.message")}</label>
             <textarea
               className="textarea"
               id="message"
               name="message"
-              placeholder={f.messagePlaceholder}
+              placeholder={t("contact.form.messagePlaceholder")}
             />
           </div>
         </div>
@@ -65,14 +65,14 @@ export default function DemoForm() {
           className="w-full mt-[22px]"
           disabled={submitted}
         >
-          {submitted ? f.submitting : f.submit}
+          {submitted ? t("contact.form.submitting") : t("contact.form.submit")}
         </Button>
         <p className="text-muted text-[12.5px] mt-[14px] text-center">
-          {f.consent}{" "}
+          {t("contact.form.consent")}{" "}
           <a href={EXTERNAL.PRIVACY} className="text-brand-700">
-            {f.privacyPolicy}
+            {t("contact.form.privacyPolicy")}
           </a>
-          {f.noSpam}
+          {t("contact.form.noSpam")}
         </p>
         <div
           className="mt-[18px] py-[16px] px-[18px] rounded-[14px] bg-brand-50 border border-solid border-brand-200 text-brand-800 text-[14.5px]"
@@ -80,7 +80,7 @@ export default function DemoForm() {
             display: submitted ? "block" : "none",
           }}
         >
-          <strong>{f.successTitle}</strong> {f.successBody}
+          <strong>{t("contact.form.successTitle")}</strong> {t("contact.form.successBody")}
         </div>
       </form>
     </div>

@@ -6,7 +6,7 @@ import { Chip } from "@/components/ui/chip";
 import { CtaSection } from "@/components/ui/cta-section";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Placeholder } from "@/components/ui/placeholder";
-import { getI18n } from "@/lib/i18n/server";
+import { getTranslation, resolveLocale } from "@/lib/i18n/server";
 import { ANCHORS, ROUTES } from "@/lib/routes";
 
 export async function generateMetadata({
@@ -14,8 +14,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { t } = getI18n((await params).locale);
-  return { title: t.solutions.meta.title, description: t.solutions.meta.description };
+  const { t } = await getTranslation(resolveLocale((await params).locale));
+  return { title: t("solutions.meta.title"), description: t("solutions.meta.description") };
 }
 
 export default async function SolutionsPage({
@@ -23,8 +23,7 @@ export default async function SolutionsPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { t } = getI18n((await params).locale);
-  const s = t.solutions;
+  const { t } = await getTranslation(resolveLocale((await params).locale));
 
   const chipVariants = ["default", "ink", "ink", "sand"] as const;
   const anchors = [ANCHORS.BOUTIQUE, ANCHORS.CHAIN, ANCHORS.LODGE, ANCHORS.RESORT];
@@ -34,11 +33,11 @@ export default async function SolutionsPage({
         {/* PAGE HERO */}
         <section className="bg-cream border-b border-solid border-line">
           <div className="container text-center" style={{ paddingBlock: "clamp(48px,6vw,80px)" }}>
-            <Eyebrow center>{s.hero.eyebrow}</Eyebrow>
-            <h1 className="display mt-4 max-w-[760px] mx-auto" style={{ fontSize: "clamp(32px,4.6vw,54px)" }}>{s.hero.title}</h1>
-            <p className="lead mt-[18px] max-w-[600px] mx-auto">{s.hero.lead}</p>
+            <Eyebrow center>{t("solutions.hero.eyebrow")}</Eyebrow>
+            <h1 className="display mt-4 max-w-[760px] mx-auto" style={{ fontSize: "clamp(32px,4.6vw,54px)" }}>{t("solutions.hero.title")}</h1>
+            <p className="lead mt-[18px] max-w-[600px] mx-auto">{t("solutions.hero.lead")}</p>
             <div className="flex flex-wrap items-center justify-center gap-2 mt-[26px]">
-              {s.hero.chips.map((chip, i) => (
+              {(t("solutions.hero.chips", { returnObjects: true }) as string[]).map((chip, i) => (
                 <Chip key={chip} asChild variant={chipVariants[i]}>
                   <a href={anchors[i]}>{chip}</a>
                 </Chip>
@@ -51,16 +50,16 @@ export default async function SolutionsPage({
           <div className="container">
             <div className="grid items-center gap-12 sol-grid grid-cols-[1fr_1.05fr]">
               <div className="reveal">
-                <Chip variant="ink">{s.boutique.chip}</Chip>
-                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{s.boutique.title}</h2>
-                <p className="lead mt-3.5 max-w-[480px]">{s.boutique.lead}</p>
+                <Chip variant="ink">{t("solutions.boutique.chip")}</Chip>
+                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t("solutions.boutique.title")}</h2>
+                <p className="lead mt-3.5 max-w-[480px]">{t("solutions.boutique.lead")}</p>
                 <ul className="sol-list">
-                  {s.boutique.list.map((li) => <li key={li}>{li}</li>)}
+                  {(t("solutions.boutique.list", { returnObjects: true }) as string[]).map((li) => <li key={li}>{li}</li>)}
                 </ul>
-                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{s.boutique.cta}</LocalizedLink></Button>
+                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{t("solutions.boutique.cta")}</LocalizedLink></Button>
               </div>
               <div className="reveal">
-                <Placeholder label={s.boutique.photo} className="h-[360px] rounded-lg" />
+                <Placeholder label={t("solutions.boutique.photo")} className="h-[360px] rounded-lg" />
               </div>
             </div>
           </div>
@@ -70,16 +69,16 @@ export default async function SolutionsPage({
           <div className="container">
             <div className="grid items-center gap-12 sol-grid sol-rev grid-cols-[1.05fr_1fr]">
               <div className="reveal order-2">
-                <Placeholder label={s.chain.photo} className="h-[360px] rounded-lg" />
+                <Placeholder label={t("solutions.chain.photo")} className="h-[360px] rounded-lg" />
               </div>
               <div className="reveal order-1">
-                <Chip>{s.chain.chip}</Chip>
-                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{s.chain.title}</h2>
-                <p className="lead mt-3.5 max-w-[480px]">{s.chain.lead}</p>
+                <Chip>{t("solutions.chain.chip")}</Chip>
+                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t("solutions.chain.title")}</h2>
+                <p className="lead mt-3.5 max-w-[480px]">{t("solutions.chain.lead")}</p>
                 <ul className="sol-list">
-                  {s.chain.list.map((li) => <li key={li}>{li}</li>)}
+                  {(t("solutions.chain.list", { returnObjects: true }) as string[]).map((li) => <li key={li}>{li}</li>)}
                 </ul>
-                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{s.chain.cta}</LocalizedLink></Button>
+                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{t("solutions.chain.cta")}</LocalizedLink></Button>
               </div>
             </div>
           </div>
@@ -89,16 +88,16 @@ export default async function SolutionsPage({
           <div className="container">
             <div className="grid items-center gap-12 sol-grid grid-cols-[1fr_1.05fr]">
               <div className="reveal">
-                <Chip variant="sand">{s.lodge.chip}</Chip>
-                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{s.lodge.title}</h2>
-                <p className="lead mt-3.5 max-w-[480px]">{s.lodge.lead}</p>
+                <Chip variant="sand">{t("solutions.lodge.chip")}</Chip>
+                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t("solutions.lodge.title")}</h2>
+                <p className="lead mt-3.5 max-w-[480px]">{t("solutions.lodge.lead")}</p>
                 <ul className="sol-list">
-                  {s.lodge.list.map((li) => <li key={li}>{li}</li>)}
+                  {(t("solutions.lodge.list", { returnObjects: true }) as string[]).map((li) => <li key={li}>{li}</li>)}
                 </ul>
-                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{s.lodge.cta}</LocalizedLink></Button>
+                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{t("solutions.lodge.cta")}</LocalizedLink></Button>
               </div>
               <div className="reveal">
-                <Placeholder label={s.lodge.photo} className="h-[360px] rounded-lg" />
+                <Placeholder label={t("solutions.lodge.photo")} className="h-[360px] rounded-lg" />
               </div>
             </div>
           </div>
@@ -108,24 +107,24 @@ export default async function SolutionsPage({
           <div className="container">
             <div className="grid items-center gap-12 sol-grid sol-rev grid-cols-[1.05fr_1fr]">
               <div className="reveal order-2">
-                <Placeholder label={s.resort.photo} className="h-[360px] rounded-lg" />
+                <Placeholder label={t("solutions.resort.photo")} className="h-[360px] rounded-lg" />
               </div>
               <div className="reveal order-1">
-                <Chip variant="sand">{s.resort.chip}</Chip>
-                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{s.resort.title}</h2>
-                <p className="lead mt-3.5 max-w-[480px]">{s.resort.lead}</p>
+                <Chip variant="sand">{t("solutions.resort.chip")}</Chip>
+                <h2 className="display mt-4" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t("solutions.resort.title")}</h2>
+                <p className="lead mt-3.5 max-w-[480px]">{t("solutions.resort.lead")}</p>
                 <ul className="sol-list">
-                  {s.resort.list.map((li) => <li key={li}>{li}</li>)}
+                  {(t("solutions.resort.list", { returnObjects: true }) as string[]).map((li) => <li key={li}>{li}</li>)}
                 </ul>
-                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{s.resort.cta}</LocalizedLink></Button>
+                <Button asChild className="mt-[26px]"><LocalizedLink href={ROUTES.CONTACT}>{t("solutions.resort.cta")}</LocalizedLink></Button>
               </div>
             </div>
           </div>
         </section>
         {/* CTA */}
-        <CtaSection title={s.cta.title} lead={s.cta.lead}>
-          <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink></Button>
-          <Button asChild variant="onDark" size="lg"><LocalizedLink href={ROUTES.PRICING}>{t.cta.seePricing}</LocalizedLink></Button>
+        <CtaSection title={t("solutions.cta.title")} lead={t("solutions.cta.lead")}>
+          <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white"><LocalizedLink href={ROUTES.CONTACT}>{t("cta.requestDemo")}</LocalizedLink></Button>
+          <Button asChild variant="onDark" size="lg"><LocalizedLink href={ROUTES.PRICING}>{t("cta.seePricing")}</LocalizedLink></Button>
         </CtaSection>
       </main>
   );

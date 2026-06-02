@@ -1,7 +1,8 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { LOCALES, LOCALE_LABELS, isLocale, type Locale } from "@/lib/i18n/config";
-import { useLocalized } from "@/lib/i18n/context";
 
 /**
  * Switches locale by changing the host's locale subdomain and keeping the path.
@@ -10,7 +11,8 @@ import { useLocalized } from "@/lib/i18n/context";
  * a locale label it is replaced; otherwise the locale label is prepended.
  */
 export default function LanguageSwitcher() {
-  const { locale, t } = useLocalized();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language;
 
   function switchTo(next: Locale) {
     if (next === locale || typeof window === "undefined") return;
@@ -27,7 +29,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="lang-switch" role="group" aria-label={t.nav.language}>
+    <div className="lang-switch" role="group" aria-label={t("nav.language")}>
       {LOCALES.map((l) => (
         <button
           key={l}

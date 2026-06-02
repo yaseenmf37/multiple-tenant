@@ -6,7 +6,7 @@ import { CtaSection } from "@/components/ui/cta-section";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { IconTile } from "@/components/ui/icon-tile";
 import { Placeholder } from "@/components/ui/placeholder";
-import { getI18n } from "@/lib/i18n/server";
+import { getTranslation, resolveLocale } from "@/lib/i18n/server";
 import { ROUTES } from "@/lib/routes";
 
 const ICONS = [
@@ -23,8 +23,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { t } = getI18n((await params).locale);
-  return { title: t.features.meta.title, description: t.features.meta.description };
+  const { t } = await getTranslation(resolveLocale((await params).locale));
+  return { title: t("features.meta.title"), description: t("features.meta.description") };
 }
 
 export default async function FeaturesPage({
@@ -32,20 +32,19 @@ export default async function FeaturesPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { t } = getI18n((await params).locale);
-  const f = t.features;
+  const { t } = await getTranslation(resolveLocale((await params).locale));
 
   return (
       <main>
         {/* PAGE HERO */}
         <section className="bg-cream border-b border-solid border-line">
           <div className="container text-center" style={{ paddingBlock: "clamp(48px,6vw,80px)" }}>
-            <Eyebrow center>{f.hero.eyebrow}</Eyebrow>
-            <h1 className="display mt-[16px] max-w-[760px] mx-auto" style={{ fontSize: "clamp(32px,4.6vw,54px)" }}>{f.hero.title}</h1>
-            <p className="lead mt-[18px] max-w-[600px] mx-auto">{f.hero.lead}</p>
+            <Eyebrow center>{t("features.hero.eyebrow")}</Eyebrow>
+            <h1 className="display mt-[16px] max-w-[760px] mx-auto" style={{ fontSize: "clamp(32px,4.6vw,54px)" }}>{t("features.hero.title")}</h1>
+            <p className="lead mt-[18px] max-w-[600px] mx-auto">{t("features.hero.lead")}</p>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-[28px]">
-              <Button asChild size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink></Button>
-              <Button asChild variant="outline" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink></Button>
+              <Button asChild size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t("cta.startFree")}</LocalizedLink></Button>
+              <Button asChild variant="outline" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t("cta.requestDemo")}</LocalizedLink></Button>
             </div>
           </div>
         </section>
@@ -53,7 +52,7 @@ export default async function FeaturesPage({
         <section className="section">
           <div className="container">
             <div className="grid gap-5 feat-grid grid-cols-3">
-              {f.grid.map((item, i) => (
+              {(t("features.grid", { returnObjects: true }) as { title: string; body: string; list: string[] }[]).map((item, i) => (
                 <article key={item.title} className="card card-hover reveal p-[30px]">
                   <IconTile variant={ICONS[i].variant} path={ICONS[i].path} />
                   <h3 className="text-[20px] mt-[18px]">{item.title}</h3>
@@ -71,30 +70,30 @@ export default async function FeaturesPage({
           <div className="container">
             <div className="grid items-center gap-12 dash-grid grid-cols-[1.05fr_1fr]">
               <div className="reveal">
-                <Eyebrow>{f.deepDive.eyebrow}</Eyebrow>
-                <h2 className="display mt-[16px]" style={{ fontSize: "clamp(28px,3.6vw,42px)" }}>{f.deepDive.title}</h2>
-                <p className="lead mt-[16px] max-w-[480px]">{f.deepDive.lead}</p>
+                <Eyebrow>{t("features.deepDive.eyebrow")}</Eyebrow>
+                <h2 className="display mt-[16px]" style={{ fontSize: "clamp(28px,3.6vw,42px)" }}>{t("features.deepDive.title")}</h2>
+                <p className="lead mt-[16px] max-w-[480px]">{t("features.deepDive.lead")}</p>
                 <div className="grid gap-4 grid-cols-[1fr_1fr] mt-[28px]">
                   <div>
-                    <div className="stat-num text-[36px] text-brand-700">{f.deepDive.stat1Num}</div>
-                    <div className="text-muted text-[14px] mt-[4px]">{f.deepDive.stat1Label}</div>
+                    <div className="stat-num text-[36px] text-brand-700">{t("features.deepDive.stat1Num")}</div>
+                    <div className="text-muted text-[14px] mt-[4px]">{t("features.deepDive.stat1Label")}</div>
                   </div>
                   <div>
-                    <div className="stat-num text-[36px] text-brand-700">{f.deepDive.stat2Num}</div>
-                    <div className="text-muted text-[14px] mt-[4px]">{f.deepDive.stat2Label}</div>
+                    <div className="stat-num text-[36px] text-brand-700">{t("features.deepDive.stat2Num")}</div>
+                    <div className="text-muted text-[14px] mt-[4px]">{t("features.deepDive.stat2Label")}</div>
                   </div>
                 </div>
               </div>
               <div className="reveal">
-                <Placeholder label={f.deepDive.photo} className="h-[340px] rounded-lg" />
+                <Placeholder label={t("features.deepDive.photo")} className="h-[340px] rounded-lg" />
               </div>
             </div>
           </div>
         </section>
         {/* CTA */}
-        <CtaSection title={f.cta.title}>
-          <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink></Button>
-          <Button asChild variant="onDark" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink></Button>
+        <CtaSection title={t("features.cta.title")}>
+          <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white"><LocalizedLink href={ROUTES.CONTACT}>{t("cta.startFree")}</LocalizedLink></Button>
+          <Button asChild variant="onDark" size="lg"><LocalizedLink href={ROUTES.CONTACT}>{t("cta.requestDemo")}</LocalizedLink></Button>
         </CtaSection>
       </main>
   );

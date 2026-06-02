@@ -3,9 +3,9 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import { LOCALES } from "@/lib/i18n/config";
-import { LocaleProvider } from "@/lib/i18n/context";
-import { getI18n } from "@/lib/i18n/server";
+import { LOCALES, getDirFromLocale } from "@/lib/i18n/config";
+import { getTranslation, resolveLocale } from "@/lib/i18n/server";
+import { I18nProvider } from "@/providers/I18nProvider";
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
@@ -16,13 +16,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { t } = getI18n((await params).locale);
+  const locale = resolveLocale((await params).locale);
+  const { t } = await getTranslation(locale);
   return {
     title: {
-      default: t.home.meta.title,
-      template: `%s — ${t.brand.name}`,
+      default: t("home.meta.title"),
+      template: `%s — ${t("brand.name")}`,
     },
-    description: t.home.meta.description,
+    description: t("home.meta.description"),
   };
 }
 
@@ -33,10 +34,12 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale, t } = getI18n((await params).locale);
+  const locale = resolveLocale((await params).locale);
+  const dir = getDirFromLocale(locale);
+  const { resources } = await getTranslation(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={dir}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -46,12 +49,12 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <LocaleProvider locale={locale} dictionary={t}>
+        <I18nProvider locale={locale} resources={resources}>
           <Navbar />
           {children}
           <Footer />
           <ScrollReveal />
-        </LocaleProvider>
+        </I18nProvider>
       </body>
     </html>
   );

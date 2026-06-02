@@ -5,16 +5,50 @@ import PricingPlans from "@/components/PricingPlans";
 import { Button } from "@/components/ui/button";
 import { CtaSection } from "@/components/ui/cta-section";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { getI18n } from "@/lib/i18n/server";
+import { getTranslation, resolveLocale } from "@/lib/i18n/server";
 import { ROUTES } from "@/lib/routes";
+
+type Compare = {
+  eyebrow: string;
+  title: string;
+  colFeatures: string;
+  colBasic: string;
+  colPro: string;
+  colEnterprise: string;
+  groupProps: string;
+  groupBooking: string;
+  groupInsight: string;
+  rows: {
+    properties: string;
+    roomsPerProperty: string;
+    teamMembers: string;
+    brandedSite: string;
+    customDomain: string;
+    dynamicPricing: string;
+    channelSync: string;
+    analytics: string;
+    api: string;
+    support: string;
+    sla: string;
+  };
+  values: {
+    unlimited: string;
+    basicAnalytics: string;
+    advanced: string;
+    advancedCustom: string;
+    email: string;
+    priority: string;
+    dedicatedCsm: string;
+  };
+};
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { t } = getI18n((await params).locale);
-  return { title: t.pricing.meta.title, description: t.pricing.meta.description };
+  const { t } = await getTranslation(resolveLocale((await params).locale));
+  return { title: t("pricing.meta.title"), description: t("pricing.meta.description") };
 }
 
 export default async function PricingPage({
@@ -22,8 +56,8 @@ export default async function PricingPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { t } = getI18n((await params).locale);
-  const c = t.pricing.compare;
+  const { t } = await getTranslation(resolveLocale((await params).locale));
+  const c = t("pricing.compare", { returnObjects: true }) as Compare;
   const r = c.rows;
   const v = c.values;
 
@@ -134,11 +168,11 @@ export default async function PricingPage({
       <section className="section">
         <div className="container max-w-[820px]">
           <div className="reveal text-center mb-[40px]">
-            <Eyebrow center>{t.pricing.faq.eyebrow}</Eyebrow>
-            <h2 className="display mt-[14px]" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t.pricing.faq.title}</h2>
+            <Eyebrow center>{t("pricing.faq.eyebrow")}</Eyebrow>
+            <h2 className="display mt-[14px]" style={{ fontSize: "clamp(26px,3.4vw,40px)" }}>{t("pricing.faq.title")}</h2>
           </div>
           <div className="faq reveal">
-            {t.pricing.faq.items.map((item, i) => (
+            {(t("pricing.faq.items", { returnObjects: true }) as { q: string; a: string }[]).map((item, i) => (
               <details className="faq-item" key={item.q} open={i === 0}>
                 <summary>{item.q}<span className="faq-ico" /></summary>
                 <p>{item.a}</p>
@@ -150,17 +184,17 @@ export default async function PricingPage({
 
       {/* CTA */}
       <CtaSection
-        title={t.pricing.cta.title}
+        title={t("pricing.cta.title")}
         titleFontSize="clamp(26px,3.6vw,40px)"
         titleMaxWidth="560px"
         padding="clamp(40px,6vw,64px)"
         sectionStyle={{ paddingTop: "0" }}
       >
         <Button asChild variant="plain" size="lg" className="bg-white text-brand-700 border-white">
-          <LocalizedLink href={ROUTES.CONTACT}>{t.cta.startFree}</LocalizedLink>
+          <LocalizedLink href={ROUTES.CONTACT}>{t("cta.startFree")}</LocalizedLink>
         </Button>
         <Button asChild variant="onDark" size="lg">
-          <LocalizedLink href={ROUTES.CONTACT}>{t.cta.requestDemo}</LocalizedLink>
+          <LocalizedLink href={ROUTES.CONTACT}>{t("cta.requestDemo")}</LocalizedLink>
         </Button>
       </CtaSection>
     </main>

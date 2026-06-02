@@ -3,11 +3,12 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import { LocalizedLink } from "@/components/LocalizedLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
-import { useLocalized } from "@/lib/i18n/context";
 import { ROUTES } from "@/lib/routes";
 
 const MenuIcon = (
@@ -23,17 +24,17 @@ const CloseIcon = (
 );
 
 export default function Navbar() {
-  const { t } = useLocalized();
+  const { t } = useTranslation();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
   const pages = [
-    { href: ROUTES.FEATURES, label: t.nav.features },
-    { href: ROUTES.SOLUTIONS, label: t.nav.solutions },
-    { href: ROUTES.PRICING, label: t.nav.pricing },
-    { href: ROUTES.ABOUT, label: t.nav.about },
-    { href: ROUTES.BLOG, label: t.nav.blog },
+    { href: ROUTES.FEATURES, label: t("nav.features") },
+    { href: ROUTES.SOLUTIONS, label: t("nav.solutions") },
+    { href: ROUTES.PRICING, label: t("nav.pricing") },
+    { href: ROUTES.ABOUT, label: t("nav.about") },
+    { href: ROUTES.BLOG, label: t("nav.blog") },
   ];
 
   useEffect(() => {
@@ -51,15 +52,15 @@ export default function Navbar() {
   return (
     <header className={`nav${scrolled ? " scrolled" : ""}`} id="siteNav">
       <div className="container nav-inner">
-        <LocalizedLink className="brand" href={ROUTES.HOME} aria-label={t.nav.homeAria}>
+        <LocalizedLink className="brand" href={ROUTES.HOME} aria-label={t("nav.homeAria")}>
           <Logo />
           <span className="flex flex-col leading-[1.05]">
-            <span>{t.brand.name}</span>
-            <span className="sub">{t.brand.tagline}</span>
+            <span>{t("brand.name")}</span>
+            <span className="sub">{t("brand.tagline")}</span>
           </span>
         </LocalizedLink>
 
-        <nav className="nav-links" aria-label={t.nav.primaryAria}>
+        <nav className="nav-links" aria-label={t("nav.primaryAria")}>
           {pages.map((p) => (
             <LocalizedLink
               key={p.href}
@@ -74,15 +75,15 @@ export default function Navbar() {
         <div className="nav-actions">
           <LanguageSwitcher />
           <Button asChild variant="ghost" className="desktop-only">
-            <LocalizedLink href={ROUTES.CONTACT}>{t.nav.login}</LocalizedLink>
+            <LocalizedLink href={ROUTES.CONTACT}>{t("nav.login")}</LocalizedLink>
           </Button>
           <Button asChild className="desktop-only">
-            <LocalizedLink href={ROUTES.CONTACT}>{t.nav.startFree}</LocalizedLink>
+            <LocalizedLink href={ROUTES.CONTACT}>{t("nav.startFree")}</LocalizedLink>
           </Button>
           <button
             className="nav-toggle"
             id="navToggle"
-            aria-label={t.nav.openMenu}
+            aria-label={t("nav.openMenu")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -104,10 +105,10 @@ export default function Navbar() {
           ))}
           <div className="m-actions">
             <Button asChild variant="outline">
-              <LocalizedLink href={ROUTES.CONTACT}>{t.nav.login}</LocalizedLink>
+              <LocalizedLink href={ROUTES.CONTACT}>{t("nav.login")}</LocalizedLink>
             </Button>
             <Button asChild>
-              <LocalizedLink href={ROUTES.CONTACT}>{t.nav.startFree}</LocalizedLink>
+              <LocalizedLink href={ROUTES.CONTACT}>{t("nav.startFree")}</LocalizedLink>
             </Button>
           </div>
         </div>
