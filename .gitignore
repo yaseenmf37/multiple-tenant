@@ -6,4 +6,8 @@
 next-env.d.ts
 .DS_Store
 .env*.local
+.env
 npm-debug.log*
+
+# Prisma generated client
+/app/generated

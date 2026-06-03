@@ -13,7 +13,9 @@ export const ROUTES = {
   PRICING: "/pricing",
   ABOUT: "/about",
   BLOG: "/blog",
-  BLOG_ARTICLE: "/blog/article",
+  // The static article route was replaced by the DB-driven blog detail
+  // (/blog/[slug]); point the marketing link at the blog index for now.
+  BLOG_ARTICLE: "/blog",
   CONTACT: "/contact",
 } as const;
 
